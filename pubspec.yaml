@@ -9,9 +9,7 @@ dependencies:
   http: ^0.13.0-nullsafety.0
   path_provider: ^1.6.11
   path: ^1.8.0-nullsafety.3
-  flutter_svg:
-    path: ../flutter_svg/
-
+  flutter_svg:  0.20.0-nullsafety.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
