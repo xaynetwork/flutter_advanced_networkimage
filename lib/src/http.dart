@@ -1,3 +1,4 @@
+// @dart=2.9
 /// http client (under development)
 ///
 /// - [x] redirect
@@ -136,6 +137,7 @@ Future<_Response> _sendRequest(
   var stream = request.finalize();
 
   try {
+    // ignore: close_sinks
     var ioRequest = await _client.openUrl(request.method, request.url);
 
     ioRequest
@@ -150,7 +152,7 @@ Future<_Response> _sendRequest(
       ioRequest.cookies.addAll(cookies);
 
     HttpClientResponse res =
-        await stream.pipe(DelegatingStreamConsumer.typed(ioRequest));
+        await stream.pipe(DelegatingStreamConsumer(ioRequest));
     var headers = <String, String>{};
     res.headers.forEach((key, values) {
       headers[key] = values.join(',');
@@ -158,7 +160,7 @@ Future<_Response> _sendRequest(
 
     return _Response(
       http.StreamedResponse(
-        DelegatingStream.typed<List<int>>(res).handleError(
+        DelegatingStream(res).cast<List<int>>().handleError(
             (error) => throw http.ClientException(error.message, error.uri),
             test: (error) => error is HttpException),
         res.statusCode,
@@ -204,7 +206,6 @@ class Cookies {
   }
 
   List<Cookie> _cookies;
-  Map<String, List<Cookies>> _sessions;
   File path;
 
   Future<void> _initCookies() async {

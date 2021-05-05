@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/painting.dart' show Offset;
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_advanced_networkimage/src/utils.dart';
 
 void main() {
