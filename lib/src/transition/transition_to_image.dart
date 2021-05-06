@@ -387,7 +387,9 @@ class _TransitionToImageState extends State<TransitionToImage>
 
   void _catchBadImage(dynamic exception, StackTrace? stackTrace) {
     if (widget.printError) print('$exception\n$stackTrace');
-    setState(() => _status = _TransitionStatus.failed);
+    if (mounted) {
+      setState(() => _status = _TransitionStatus.failed);
+    }
     _resolveStatus();
 
     if (widget.loadFailedCallback != null) widget.loadFailedCallback!();
