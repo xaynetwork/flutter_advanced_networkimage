@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
@@ -7,7 +6,7 @@ import 'package:flutter_advanced_networkimage/src/utils.dart';
 
 class ZoomableWidget extends StatefulWidget {
   ZoomableWidget({
-    Key key,
+    Key? key,
     this.minScale: 0.7,
     this.maxScale: 1.4,
     this.initialScale: 1.0,
@@ -28,21 +27,7 @@ class ZoomableWidget extends StatefulWidget {
     this.onZoomChanged,
     this.resetDuration: const Duration(milliseconds: 250),
     this.resetCurve: Curves.easeInOut,
-  })  : assert(minScale != null),
-        assert(maxScale != null),
-        assert(initialScale != null),
-        assert(initialOffset != null),
-        assert(initialRotation != null),
-        assert(enableZoom != null),
-        assert(panLimit != null),
-        assert(singleFingerPan != null),
-        assert(multiFingersPan != null),
-        assert(enableRotate != null),
-        assert(zoomSteps != null),
-        assert(autoCenter != null),
-        assert(bounceBackBoundary != null),
-        assert(enableFling != null),
-        assert(flingFactor != null);
+  });
 
   /// The minimum size for scaling.
   final double minScale;
@@ -75,10 +60,10 @@ class ZoomableWidget extends StatefulWidget {
   final double panLimit;
 
   /// The child widget that is display.
-  final Widget child;
+  final Widget? child;
 
   /// Tap callback for this widget.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// Allow users to zoom with double tap steps by steps.
   final int zoomSteps;
@@ -96,7 +81,7 @@ class ZoomableWidget extends StatefulWidget {
   final double flingFactor;
 
   /// When the scale value changed, the callback will be invoked.
-  final ValueChanged<double> onZoomChanged;
+  final ValueChanged<double>? onZoomChanged;
 
   /// The duration of reset animation.
   final Duration resetDuration;
@@ -135,8 +120,8 @@ class _ZoomableWidgetState extends State<ZoomableWidget> {
 
   void _onScaleStart(ScaleStartDetails details) {
     if (_childSize == Size.zero) {
-      final RenderBox renderbox = _key.currentContext.findRenderObject();
-      _childSize = renderbox.size;
+      final renderbox = _key.currentContext?.findRenderObject() as RenderBox?;
+      _childSize = renderbox!.size;
     }
     setState(() {
       _zoomOriginOffset = details.focalPoint;
@@ -160,7 +145,7 @@ class _ZoomableWidgetState extends State<ZoomableWidget> {
       if (widget.enableZoom && details.scale != 1.0) {
         _zoom = (_previousZoom * details.scale)
             .clamp(widget.minScale, widget.maxScale);
-        if (widget.onZoomChanged != null) widget.onZoomChanged(_zoom);
+        if (widget.onZoomChanged != null) widget.onZoomChanged!(_zoom);
       }
     });
 
@@ -205,7 +190,7 @@ class _ZoomableWidgetState extends State<ZoomableWidget> {
     final double magnitude = velocity.distance;
     if (magnitude > 800.0 * _zoom && widget.enableFling) {
       final Offset direction = velocity / magnitude;
-      final double distance = (Offset.zero & context.size).shortestSide;
+      final double distance = (Offset.zero & context.size!).shortestSide;
       final Offset endOffset =
           _pan + direction * distance * widget.flingFactor * 0.5;
       _pan = Offset(
@@ -252,7 +237,7 @@ class _ZoomableWidgetState extends State<ZoomableWidget> {
 
     setState(() {
       _zoom = _tmpZoom;
-      if (widget.onZoomChanged != null) widget.onZoomChanged(_zoom);
+      if (widget.onZoomChanged != null) widget.onZoomChanged!(_zoom);
       _pan = Offset.zero;
       _rotation = 0.0;
       _previousZoom = _tmpZoom;
@@ -327,12 +312,12 @@ class _ZoomableWidgetLayout extends MultiChildLayoutDelegate {
 
 class _ZoomableChild extends ImplicitlyAnimatedWidget {
   const _ZoomableChild({
-    Duration duration,
+    required Duration duration,
     Curve curve = Curves.linear,
-    @required this.zoom,
-    @required this.panOffset,
-    @required this.rotation,
-    @required this.child,
+    required this.zoom,
+    required this.panOffset,
+    required this.rotation,
+    required this.child,
   }) : super(duration: duration, curve: curve);
 
   final double zoom;
@@ -346,19 +331,19 @@ class _ZoomableChild extends ImplicitlyAnimatedWidget {
 }
 
 class _ZoomableChildState extends AnimatedWidgetBaseState<_ZoomableChild> {
-  DoubleTween _zoom;
-  OffsetTween _panOffset;
+  late DoubleTween _zoom;
+  late OffsetTween _panOffset;
   // OffsetTween _zoomOriginOffset;
-  DoubleTween _rotation;
+  late DoubleTween _rotation;
 
   @override
   void forEachTween(visitor) {
     _zoom = visitor(
-        _zoom, widget.zoom, (dynamic value) => DoubleTween(begin: value));
+        _zoom, widget.zoom, (dynamic value) => DoubleTween(begin: value)) as DoubleTween;
     _panOffset = visitor(_panOffset, widget.panOffset,
-        (dynamic value) => OffsetTween(begin: value));
+        (dynamic value) => OffsetTween(begin: value)) as OffsetTween;
     _rotation = visitor(_rotation, widget.rotation,
-        (dynamic value) => DoubleTween(begin: value));
+        (dynamic value) => DoubleTween(begin: value)) as DoubleTween;
   }
 
   @override

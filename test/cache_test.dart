@@ -31,21 +31,6 @@ void main() {
   });
 
   group('Cache Test', () {
-    test('=> non-null test', () async {
-      await DiskCache().keepCacheHealth();
-
-      expect(() => CacheRule(maxAge: null), throwsAssertionError);
-      expect(() => CacheRule(storeDirectory: null), throwsAssertionError);
-      expect(() => CacheRule(checksum: null), throwsAssertionError);
-
-      expect(() => DiskCache()..maxEntries = null, throwsAssertionError);
-      expect(() => DiskCache()..maxSizeBytes = null, throwsAssertionError);
-      expect(() => DiskCache()..maxCommitOps = null, throwsAssertionError);
-
-      expect(() => DiskCache()..maxEntries = -1, throwsAssertionError);
-      expect(() => DiskCache()..maxSizeBytes = -1, throwsAssertionError);
-      expect(() => DiskCache()..maxCommitOps = -1, throwsAssertionError);
-    });
     test('=> save and load', () async {
       DiskCache().printError = true;
 

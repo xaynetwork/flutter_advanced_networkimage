@@ -1,4 +1,3 @@
-// @dart=2.9
 library advanced_provider;
 
 export 'package:flutter_advanced_networkimage/src/disk_cache.dart';
